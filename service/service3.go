@@ -11,7 +11,7 @@ import (
 
 const emailMessageFormat = `Hello,
 The picture that you requested is ready to download!
-You can download the picture from the linke bellow:
+You can download the picture from the link below:
 %s`
 
 type Service3 struct {
