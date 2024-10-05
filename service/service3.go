@@ -3,6 +3,7 @@ package service
 import (
 	"cc-service3/ext"
 	"cc-service3/storage"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -43,13 +44,14 @@ func (s Service3) Execute() error {
 			log.Println("generating image for ", r.ReqId)
 			imgfile, err := s.TextToImg.GenerateImg(r.ImageCaption)
 			if err != nil {
+				s.failureHandler(r.ReqId)
 				return fmt.Errorf("error at image generation: %w", err)
 			}
 
-			// TODO: format as jpeg and upload as r.ReqId + ".jpg"
 			log.Println("uploading image ", r.ReqId)
 			imgurl, err := s.PicStore.Upload(imgfile, imgfile.Size(), r.ReqId)
 			if err != nil {
+				s.failureHandler(r.ReqId)
 				return fmt.Errorf("error at uploading image: %w", err)
 			}
 
@@ -78,4 +80,16 @@ func (s Service3) Execute() error {
 		}
 	}
 	return nil
+}
+
+func (s Service3) failureHandler(requstId string) {
+	err := s.DataBase.SetStatus(requstId, "failure")
+	if err != nil {
+		var notfound *storage.RequestNotFoundError
+		if !errors.As(err, &notfound) {
+			fmt.Printf("couldn't update request %s status to \"failed\": %v\n", requstId, err)
+		}
+		return
+	}
+	fmt.Printf("request %s status is set to 'failure'", requstId)
 }
