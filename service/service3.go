@@ -32,8 +32,8 @@ func NewService3(db storage.RequestDB, imgstore storage.ImageStorage, txtimg ext
 
 func (s Service3) Execute() error {
 	ticker := time.Tick(5 * time.Second)
+	log.Println("starting ticker...")
 	for range ticker {
-		log.Println("ticker started")
 		readyReqs, err := s.DataBase.GetAllReadies()
 		if err != nil {
 			return fmt.Errorf("error at reading database: %w", err)
@@ -70,7 +70,7 @@ func (s Service3) Execute() error {
 			log.Println("sending email")
 			mail := ext.Email{
 				RecipientMail: r.Email,
-				Subject:       "CCS3: Requested Picture is Ready",
+				Subject:       fmt.Sprintf("CCS3: Picture for Requested %s is Ready", r.ReqId),
 				Message:       fmt.Sprintf(emailMessageFormat, imgurl),
 			}
 			err = s.MSender.Send(mail)

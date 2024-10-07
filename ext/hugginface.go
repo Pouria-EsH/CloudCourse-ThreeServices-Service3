@@ -3,13 +3,9 @@ package ext
 import (
 	"bytes"
 	"fmt"
-	"image"
-	"image/jpeg"
 	"io"
 	"net/http"
-	"os"
 	"strings"
-	"time"
 )
 
 const VITGPT2_APIURL = "https://api-inference.huggingface.co/models/ZB-Tech/Text-to-Image"
@@ -37,11 +33,6 @@ func (hf HuggingFace) GenerateImg(text string) (*bytes.Reader, error) {
 		return nil, err
 	}
 
-	err = hf.saveImage(body)
-	if err != nil {
-		fmt.Println("couldn't save image: ", err)
-	}
-
 	return bytes.NewReader(body), nil
 }
 
@@ -56,22 +47,4 @@ func (hf HuggingFace) sendHFHttpRequest(text string) (*http.Response, error) {
 
 	client := &http.Client{}
 	return client.Do(req)
-}
-
-func (hf HuggingFace) saveImage(resp []byte) error {
-	img, _, err := image.Decode(bytes.NewReader(resp))
-	if err != nil {
-		return err
-	}
-
-	out, _ := os.Create(
-		fmt.Sprintf(".temp/images/%v.jpg", time.Now().Unix()))
-	defer out.Close()
-
-	err = jpeg.Encode(out, img, &jpeg.Options{Quality: 100})
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
