@@ -44,11 +44,11 @@ func (m MailerSend) Send(email Email) error {
 	message.SetText(email.Message)
 
 	log.Println("sending email to ", email.RecipientMail)
-	res, err := m.ms.Email.Send(ctx, message)
+	_, err := m.ms.Email.Send(ctx, message)
 	if err != nil {
 		return fmt.Errorf("error in sending email: %v", err)
 	}
 
-	fmt.Println(res.Header.Get("X-Message-Id"))
+	log.Println("email sent")
 	return nil
 }

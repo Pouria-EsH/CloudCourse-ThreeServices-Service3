@@ -4,7 +4,7 @@ import (
 	"cc-service3/ext"
 	"cc-service3/service"
 	"cc-service3/storage"
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -19,8 +19,7 @@ func main() {
 		acs3_accessKey,
 		acs3_secretKey)
 	if err != nil {
-		fmt.Println("Fatal error at object storage: %w", err)
-		os.Exit(1)
+		log.Fatalf("Fatal error at object storage: %v", err)
 	}
 
 	mySQL_username := os.Getenv("CCSERV3_MYSQL_USERNAME")
@@ -28,8 +27,7 @@ func main() {
 	mySQL_address := "mysql-container:3306"
 	database, err := storage.NewMySQLDB(mySQL_username, mySQL_password, mySQL_address, "ccp1")
 	if err != nil {
-		fmt.Println("Fatal error at database: %w", err)
-		os.Exit(1)
+		log.Fatalf("Fatal error at database: %v", err)
 	}
 
 	texttoimage := ext.NewHuggingFace(os.Getenv("CCSERV3_HF_APIKEY"))
@@ -43,6 +41,6 @@ func main() {
 	err = srv.Execute()
 
 	if err != nil {
-		fmt.Println("Could not start service1")
+		log.Fatal("Could not start service1")
 	}
 }

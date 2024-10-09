@@ -29,8 +29,7 @@ func (hf HuggingFace) GenerateImg(text string) (*bytes.Reader, error) {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("Error reading response:", err)
-		return nil, err
+		return nil, fmt.Errorf("reading response: %w", err)
 	}
 
 	return bytes.NewReader(body), nil
@@ -39,8 +38,7 @@ func (hf HuggingFace) GenerateImg(text string) (*bytes.Reader, error) {
 func (hf HuggingFace) sendHFHttpRequest(text string) (*http.Response, error) {
 	req, err := http.NewRequest("POST", VITGPT2_APIURL, strings.NewReader(text))
 	if err != nil {
-		fmt.Println("Error creating request:", err)
-		return nil, err
+		return nil, fmt.Errorf("Error creating request: %v", err)
 	}
 
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", hf.apikey))

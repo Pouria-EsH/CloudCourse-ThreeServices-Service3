@@ -40,8 +40,7 @@ func (s Service3) Execute() error {
 		}
 
 		for _, r := range readyReqs {
-			fmt.Println("----------")
-			log.Println("generating image for ", r.ReqId)
+			log.Println("--- generating image for ", r.ReqId)
 			imgfile, err := s.TextToImg.GenerateImg(r.ImageCaption)
 			if err != nil {
 				s.failureHandler(r.ReqId)
@@ -75,7 +74,7 @@ func (s Service3) Execute() error {
 			}
 			err = s.MSender.Send(mail)
 			if err != nil {
-				fmt.Println("failed to send notifying email")
+				log.Println("failed to send notifying email")
 			}
 		}
 	}
