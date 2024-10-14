@@ -31,7 +31,7 @@ func main() {
 
 	mySQL_username := os.Getenv("CCSERV3_MYSQL_USERNAME")
 	mySQL_password := os.Getenv("CCSERV3_MYSQL_PASSWORD")
-	mySQL_address := "mysql-container:3306"
+	mySQL_address := os.Getenv("CCSERV3_MYSQL_ADDRESS")
 	database, err := storage.NewMySQLDB(mySQL_username, mySQL_password, mySQL_address, "ccp1")
 	if err != nil {
 		log.Fatalf("Fatal error at database: %v", err)
