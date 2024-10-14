@@ -11,11 +11,18 @@ import (
 )
 
 func main() {
-	godotenv.Load()
+	if err := godotenv.Load(); err != nil {
+		log.Println("no .env file found")
+	}
+
+	acs3_bucket := os.Getenv("CCSERV1_ACS3_BUCKET")
+	acs3_region := os.Getenv("CCSERV1_ACS3_REGION")
+	acs3_endpoint := os.Getenv("CCSERV1_ACS3_ENDPOINT")
 	acs3_accessKey := os.Getenv("CCSERV3_ACS3_ACCESSKEY")
 	acs3_secretKey := os.Getenv("CCSERV3_ACS3_SECRETKEY")
-	imagestore, err := storage.NewArvanCloudS3("cc-practice-004-out", "ir-thr-at1",
-		"https://s3.ir-thr-at1.arvanstorage.com",
+	imagestore, err := storage.NewArvanCloudS3(
+		acs3_bucket, acs3_region,
+		acs3_endpoint,
 		acs3_accessKey,
 		acs3_secretKey)
 	if err != nil {
